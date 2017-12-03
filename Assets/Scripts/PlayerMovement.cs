@@ -6,18 +6,22 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour {
 
+    private static PlayerMovement instance;
+    public static PlayerMovement GetInstance()
+    {
+        if (instance == null)
+        {
+            instance = GameObject.FindObjectOfType<PlayerMovement>();
+        }
+        return instance;
+    }
+
     public Text debugText;
-    public GameObject fadeBackground;
-    public Image fadeImage;
     public float heightFromGround = 5.0f;
-    public float fadeSpeed = 0.1f;
-    public float fadeDelay = 0.2f;
+    public Fade fade;
 
     private bool canMove = true;
 
-    void Awake() {
-        fadeImage = fadeBackground.GetComponent<Image>();
-    }
 
     public void HandleClick(BaseEventData data)
     {
@@ -30,47 +34,32 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public void UpdatePosition(Vector3 newPosition) {
-        newPosition.y += heightFromGround;
-        transform.position = newPosition;
-    }
-
-    IEnumerator FadeAndMove(Vector3 newPosition)
+   
+    public IEnumerator FadeAndMove(Vector3 newPosition, GameObject[] objectsToDisable = null)
     {
         canMove = false;
-        EnableFadeObject();
-        yield return StartCoroutine(FadeToBlack());
+        yield return StartCoroutine(fade.FadeToBlack());
         UpdatePosition(newPosition);
-        yield return StartCoroutine(FadeFromBlack());
-        fadeBackground.SetActive(false);
+        if (objectsToDisable != null)
+        {
+            foreach (GameObject go in objectsToDisable)
+            {
+                go.SetActive(false);
+            }
+        }
+        yield return StartCoroutine(fade.FadeFromBlack());
         canMove = true;
         yield return null;
     }
 
-    IEnumerator FadeToBlack() {
-        Color col = fadeImage.color;
-        while (fadeImage.color.a < 1.0f)
-        {
-            fadeImage.color = new Color(col.r, col.g, col.b, col.a + fadeSpeed);
-            col = fadeImage.color;
-            yield return new WaitForSeconds(fadeDelay);
-        }
-    }
-
-    IEnumerator FadeFromBlack()
+    public void UpdatePosition(Vector3 newPosition)
     {
-        Color col = fadeImage.color;
-        while (fadeImage.color.a >= 0.0f)
-        {
-            fadeImage.color = new Color(col.r, col.g, col.b, col.a - fadeSpeed);
-            col = fadeImage.color;
-            yield return new WaitForSeconds(fadeDelay);
-        }
+        newPosition.y += heightFromGround;
+        transform.position = newPosition;
     }
 
-    void EnableFadeObject() {
-        Color oldColor = fadeImage.color;
-        fadeImage.color = new Color(oldColor.r, oldColor.g, oldColor.b, 0.0f);
-        fadeBackground.SetActive(true);
+    public void SetCanMove(bool canMove)
+    {
+        this.canMove = canMove;
     }
 }
