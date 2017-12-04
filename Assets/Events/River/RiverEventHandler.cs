@@ -10,6 +10,8 @@ public class RiverEventHandler : MonoBehaviour {
     public Fade fader;
     public GameObject blockerObject;
     public GameObject canvasObject;
+    public GameObject newBlockerObjects;
+    public GameObject newCanvas;
 
     bool isSelected = false;
 
@@ -37,7 +39,9 @@ public class RiverEventHandler : MonoBehaviour {
 
     IEnumerator CrossRiver() {
         isSelected = true;
-        yield return StartCoroutine(movement.FadeAndMove(destinationObject.transform.position, new GameObject[] { blockerObject, canvasObject }));
+        yield return StartCoroutine(movement.FadeAndMove(destinationObject.transform.position, new GameObject[] { blockerObject, canvasObject}));
+        newBlockerObjects.SetActive(true);
+        newCanvas.SetActive(true);
         isSelected = false;
     }
 }

@@ -57,4 +57,18 @@ public class PlayerChoiceManager : MonoBehaviour {
         Debug.Log("New Fangshi points: " + fangshiPoints);
     }
 
+    public float GetLaoziPoints() {
+        return laoziPoints;
+    }
+
+    public float GetZuangziPoints()
+    {
+        return zuangziPoints;
+    }
+
+    public float GetFangshiPoints()
+    {
+        return fangshiPoints;
+    }
+
 }
